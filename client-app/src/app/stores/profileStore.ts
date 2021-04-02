@@ -70,6 +70,20 @@ export default class ProfileStore {
                     this.profile.photos.find(p => p.isMain)!.isMain = false;
                     this.profile.photos.find(p => p.id === photo.id)!.isMain = true;
                     this.profile.image = photo.url;
+
+                    //custom code, possible insufficient on real scenarios
+                    store.activityStore.activityRegistry.forEach((activity) => {
+
+                        if (activity.hostUsername === this.profile?.username && activity.host) {
+                            activity.host.image = photo.url;
+                        }
+
+                        activity.attendees.forEach((attendee) => {
+                            if (attendee.username === this.profile?.username)
+                                attendee.image = photo.url;
+                        })
+                    })
+
                     this.loading = false;
                 }
             })
